@@ -7,11 +7,12 @@
 	<title>Document</title>
 </head>
 <body>
-	<header><h1>Welcome, {{ user.first_name }}</h1><a href="/logout">Log Out</a></header>
+	<header><h1>Welcome, {{ user.first_name }}</h1><a href="/logout">Log Out</a><a href="/books">Return</a></header>
 	<hr />
 	<div name="book_about">
-		{ % if len(user.books_uploaded.filter(title=book.title)) > 0 % }
-		<form action="edit_book" method="post">
+		{% if book.uploaded_by == user %}
+		<form action="{{book.id}}/edit" method="post">
+			{% csrf_token %}
 			<input name="title" type="text" value="{{book.title}}">
 			<p>Added by: {{user.first_name}} {{user.last_name}}</p>
 			<p>Added on: {{book.created_at}}</p>
@@ -19,17 +20,29 @@
 			<p>Description: <input name="description" type="text" value="{{book.description}}"></p>
 			<button type="submit">Update</button>
 		</form>
-		<a href="/">Delete</a>
-		{ % else % }
+		<a href="{{book.id}}/delete">Delete</a>
+		{% else %}
 			<h3>{{book.title}}</h3>
-			<p>Added by: {{user.first_name}} {{user.last_name}}</p>
+			<p>Added by: {{book.uploaded_by.first_name}} {{book.uploaded_by.last_name}}</p>
 			<p>Added on: {{book.created_at}}</p>
 			<p>Last Updated: {{book.updated_at}}</p>
 			<p>Description: {{book.description}}</p>
-		{ % endif % }
+		{% endif %}
+		{% if not book in liked_books %}
+			<a href="{{book.id}}/favorite">Favorite</a>
+		{% endif %}
 	</div>
 	<div name="user_likes">
-
+		<h3>Users who like this book</h3>
+		<ul>
+		{% for u in likes %}
+			<li>{{u.first_name}} {{u.last_name}}
+				{% if u == user %}
+				<a href="{{book.id}}/unfavorite">UnFavorite</a>
+				{% endif %}
+			</li> 
+		{% endfor %}
+		</ul>
 	</div>
 </body>
 </html>

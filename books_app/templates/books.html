@@ -18,16 +18,17 @@
 		</form>
 	</div>
 	<div name="all_books">
+		<h2>All Books</h2>
 		{% for b in all_books %}
-			<ol>
+			<ul>
 				<li><a href="/book/{{b.id}}">{{b.title}}</a></li>
-				<li>(Added by {{b.uploaded_by}})</li>
-				{% if 'user.liked_books.filter(title=b.title).count()' > 0 %}
-				<li>This is one of your favorites</li>
+				<li>(Added by {{b.uploaded_by.first_name}} {{b.uploaded_by.last_name}})</li>
+				{% if b in liked_books %}
+				<li>This book is your favorite</li>
 				{% else %}
-				<li><a href="/book/{{b.id}}/favorite">Favorite</a></li>
+				<li><a href="/book/{{b.id}}/favorite">Add to Favorites</a></li>
 				{% endif %}
-			</ol>
+			</ul>
 		{% endfor %}
 	</div>
 </body>

@@ -42,9 +42,9 @@ class User(models.Model):
 # What defines a Book
 class Book(models.Model):
 	title = models.CharField(max_length=255)
-	description = models.TextField()
+	description = models.CharField(max_length=255)
 	uploaded_by = models.ForeignKey(User, related_name='books_uploaded', on_delete=models.CASCADE)
-	users_who_like = models.ForeignKey(User, related_name='liked_books', on_delete=models.CASCADE)
+	users_who_like = models.ManyToManyField(User, related_name='liked_books')
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
 	objects = Manager()
